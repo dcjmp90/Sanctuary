@@ -32,19 +32,19 @@ class ItemSearchModule(BaseModule):
     callable, and every query will be handled the exact same way.
     """
     def __init__(self,
-                 parent_conatiner='article',
+                 parent_container='article',
                  child_container='span',
                  title_container='h3',
                  filter_term='class',
                  title_class='z-sort-name',
     ):
-    self.tokenizer = ItemTokenizer()
-    super().__init__(parent_conatiner,
-                     child_container,
-                     title_container,
-                     filter_term,
-                     title_class,
-    )
+        self.tokenizer = ItemTokenizer()
+        super().__init__(parent_container,
+                        child_container,
+                        title_container,
+                        filter_term,
+                        title_class,
+        )
 
     def _search(self):
         """TODO: search details
@@ -57,22 +57,25 @@ class ItemSearchModule(BaseModule):
         return self.results.__iter__()
     
     def __call__(self,
-                 parent_conatiner,
+                 parent_container,
                  item_name = None,
                  item_spec = None,
                  **kwargs,
     ):
         """TODO: callable details
         """
+        results = []
+
         if not item_name and not item_spec:
             #TODO
-            for link in parent_conatiner.findAll(self.parent_conatiner):
+            for link in parent_container:
                 tags = link.find_all(self.title_container,{self.filter_term:self.title_class})
                 if tags:
-                    self.results['item_names'] = [''.join(s.text for s in tags)]
+                    results.append([s.text for s in tags])
+            return results
         elif not item_spec and item_name:
             #TODO
-            for link in parent_conatiner.findAll(self.parent_conatiner):
+            for link in parent_container:
                 tags = link.find_all(self.title_container,
                                      {self.filter_term:self.title_class},
                                      text=re.compile(item_name),
@@ -85,14 +88,15 @@ class ItemSearchModule(BaseModule):
         elif item_spec and item_name:
             #TODO
             specs = {self.filter_term:self.title_class}
-            for link in parent_conatiner.findAll(self.parent_conatiner):
+            for link in parent_container:
                 tags = link.find_all(self.title_container,
                                      specs,
                                      text=re.compile(item_name))
                 for tag in tags:
                     if tag:
-                        self.results[item_name] = self.tokenizer(tag,
-                                                           item_name,
-                                                           item_spec=item_spec)
+                        results.append(self.tokenizer(tag,
+                                                item_name,
+                                                item_spec=item_spec))
+            return results
         else:
             self.results.append("No Data!! How did you get here?!")

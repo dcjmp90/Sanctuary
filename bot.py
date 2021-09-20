@@ -25,9 +25,8 @@ bot = config._get_bot()
 
 @bot.command(name='runewords')
 async def runewords(ctx,
-                    item_name = None,
-                    item_spec = None,
-                    **kwargs,
+                    item_name,
+                    item_spec,
 ):
     pprint = config(item_type='runewords',
                     item_name=item_name,

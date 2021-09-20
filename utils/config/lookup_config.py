@@ -92,7 +92,7 @@ class ItemLookupConfig(BaseConfig):
         if item_type.lower() in self.bs_parser.keys():
             _bs_parser = self.bs_parser[item_type.lower()]
 
-            items = _bs_parser.findAll(self.config.CONTAINER):
+            items = _bs_parser.findAll(self.config.CONTAINER)
             return items
         else:
             return None
@@ -107,16 +107,11 @@ class ItemLookupConfig(BaseConfig):
         """Override of the call method"""
         parent_container = self._item_type(item_type)
 
-        if parent_conatiner is None:
-            return f"No known item of type {}. KYS.".format(item_type)
+        if parent_container is None:
+            return "No known item of type {}. KYS.".format(item_type)
         else:
-            self.searchable(parent_conatiner,
+            return self.searchable(parent_container,
                             item_name,
                             item_spec,
-                            **kwargs,
-            )
-            results = []
-            for result in self.searchable:
-                results.append(''.join(result))
-            return results
+                            **kwargs)
             

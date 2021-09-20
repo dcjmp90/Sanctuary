@@ -69,17 +69,16 @@ class ItemTokenizer:
                           socket_class='zso_rwsock',
                           level_required='zso_rwlvlrq',
     ):
-        results = Map({})
-        results[item_spec] = Map({})
+        results = []
         specs_item_type = {self.filter_term:weapon_class}
         specs_sockets = {self.filter_term:socket_class}
         specs_level = {self.filter_term:level_required}
         item_types = tag.parent.find_all(type_filter_term,specs_item_type)
         socket_rq = tag.parent.find_all(self.item_content,specs_sockets)
         lvl_rq = tag.parent.find_all(self.item_content,specs_level)
-        results[item_spec]['sockets'] = [t.parent.text.strip() for t in socket_rq]
-        results[item_spec]['item_types'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
-        results[item_spec]['level'] = [t.text.strip() for t in lvl_rq]
+        results.append([t.parent.text.strip() for t in socket_rq])
+        results.append([re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types])
+        results.append([t.text.strip() for t in lvl_rq])
         return results
 
     def _get_setbonus(self,

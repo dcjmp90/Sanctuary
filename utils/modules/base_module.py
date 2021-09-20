@@ -30,26 +30,25 @@ class BaseModule(metaclass=abc.ABCMeta):
     """
 
     def __init__(self,
-                 parent_conatiner,
+                 parent_container,
                  child_container,
                  title_container,
                  filter_term,
                  title_class,
                  **kwargs,
     ):
-    self.parent_conatiner = parent_conatiner
-    self.child_container = child_container
-    self.title_container = title_container
-    self.results = Map({})
+        self.parent_container = parent_container
+        self.child_container = child_container
+        self.title_container = title_container
+        self.filter_term = filter_term
+        self.title_class = title_class
+        self.results = Map({})
 
-    @abc.abstractmethod
     def __iter__(self):
         """override iterator"""
 
-    @abc.abstractmethod
     def __call__(self):
         """override callable"""
     
-    @abs.abstractmethod
     def _search(self):
         """ensure a searchable query is handled internally"""
