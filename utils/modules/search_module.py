@@ -15,6 +15,8 @@
 """SearchModule class implementation"""
 
 from sanctuary.utils.modules.base_module import BaseModule
+import bs4 as bs
+import re
 
 __all__ = ['ItemSearchModule']
 
@@ -30,9 +32,11 @@ class ItemSearchModule(BaseModule):
     def __init__(self,
                  parent_conatiner='article',
                  child_container='span',
+                 title_container='h3',
     ):
     super().__init__(parent_conatiner,
                      child_container,
+                     title_container,
     )
 
     def _search(self):
@@ -43,14 +47,27 @@ class ItemSearchModule(BaseModule):
     def __iter__(self):
         """TODO: iterator details
         """
-        pass
+        return self.results.__iter__()
     
-    def __call__(self):
+    def __call__(self,
+                 parent_conatiner,
+                 item_name,
+                 item_spec,
+                 **kwargs,
+    ):
         """TODO: callable details
         """
-        pass
-    
-    def __str__(self):
-        """TODO: tostring details
-        """
-        pass
+        if not item_name and not item_spec:
+            #TODO
+            for link in parent_conatiner.findAll(self.parent_conatiner):
+                self.results = []
+                tags = link.find_all(self.title_container)
+                if tags:
+                    self.results.append([''.join(s.text for s in tags)])
+        elif not item_spec and item_name:
+            #TODO
+            for line in parent_conatiner.findAll(self.parent_conatiner):
+                self.results = []
+                tags = link.find_all(self.title_container,text=re.compile(item_name))
+        else:
+            self.results.append("No Data!! How did you get here?!")

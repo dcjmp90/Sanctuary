@@ -33,13 +33,11 @@ class BaseConfig(metaclass=abc.ABCMeta):
     These will scale and grow as needs present themselves.
     """
 
-    @abc.abstractmethod
     def __init__(self,
                  name,
                  prefix,
                  args,
-                 ):
-        """Base class constructor"""
+    ):
         self.name = name
         self.prefix = prefix
         self.args = args

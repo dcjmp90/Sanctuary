@@ -31,10 +31,12 @@ class BaseModule(metaclass=abc.ABCMeta):
     def __init__(self,
                  parent_conatiner,
                  child_container,
+                 title_container,
                  **kwargs,
     ):
     self.parent_conatiner = parent_conatiner
     self.child_container = child_container
+    self.title_container = title_container
     self.results = []
 
     @abc.abstractmethod
@@ -44,10 +46,6 @@ class BaseModule(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __call__(self):
         """override callable"""
-    
-    @abc.abstractmethod
-    def __str__(self):
-        """override to string"""
     
     @abs.abstractmethod
     def _search(self):
