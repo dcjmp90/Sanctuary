@@ -14,6 +14,7 @@
 import bs4 as bs
 import urllib.request as url_request
 from sanctuary.utils.config.base_config import BaseConfig
+from sanctuary.utils.modules.search_module import ItemSearchModule 
 from sanctuary.utils.parser.cli_arguments import Map
 
 __all__ = ['ItemLookupConfig']
@@ -78,6 +79,7 @@ class ItemLookupConfig(BaseConfig):
        
         self.searchables = [ v for k, v in self.SEARCH_ITEMS.items() ]
         self.bs_parser = Map({})
+        self.searchable = ItemSearchModule()
         
         for name in self.searchables:
             url = url_request.urlopen(self.args.BASE_URL+name)
@@ -88,14 +90,10 @@ class ItemLookupConfig(BaseConfig):
         """Parser for all of type"""
 
         if item_type.lower() in self.bs_parser.keys():
-            item_names = []
             _bs_parser = self.bs_parser[item_type.lower()]
 
-            for item_container in _bs_parser.find_all(self.config.CONTAINER):
-                item_names.append(item_container.a.get_text())
-
-            return item_names
-
+            items = _bs_parser.findAll(self.config.CONTAINER):
+            return items
         else:
             return None
     
@@ -107,14 +105,18 @@ class ItemLookupConfig(BaseConfig):
                  **kwargs,
     ):
         """Override of the call method"""
+        parent_container = self._item_type(item_type)
 
-        if not item_name:
-            return self._item_type(item_type)
-        elif not item_spec and item_name:
-            # specific item + details search
-            pass
+        if parent_conatiner is None:
+            return f"No known item of type {}. KYS.".format(item_type)
         else:
-            # deep search
-            pass
-
+            self.searchable(parent_conatiner,
+                            item_name,
+                            item_spec,
+                            **kwargs,
+            )
+            results = []
+            for result in self.searchable:
+                results.append(''.join(result))
+            return results
             
