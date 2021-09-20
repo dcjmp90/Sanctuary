@@ -49,15 +49,19 @@ class ItemTokenizer:
         return results
     
     def _get_stats(self,
-                   items,
+                   tag,
                    item_name,
                    item_spec,
+                   item_stats='z-smallstats',
     ):
     #TODO
-        pass
+        results = Map({})
+        results[item_spec] = Map({})
+        specs_stats = {self.filter_term:item_stats}
+        heap = tag.parent.find_all(self.item_content,specs_stats)
     
     def _get_requirements(self,
-                          items,
+                          tag,
                           item_name,
                           item_spec,
                           type_filter_term='a',
@@ -65,18 +69,18 @@ class ItemTokenizer:
                           socket_class='zso_rwsock',
                           level_required='zso_rwlvlrq',
     ):
-    results = Map({})
-    results[item_spec] = Map({})
-    specs_item_type = {self.filter_term:weapon_class}
-    specs_sockets = {self.filter_term:socket_class}
-    specs_level = {self.filter_term:level_required}
-    item_types = items.find_all(type_filter_term,specs_item_type)
-    socket_rq = items.find_all(self.item_content,specs_sockets)
-    lvl_rq = items.find_all(self.item_content,specs_level)
-    results[item_spec]['sockets'] = [t.parent.text.strip() for t in socket_rq]
-    results[item_spec]['item_types'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
-    results[item_spec]['level'] = [t.text.strip() for t in lvl_rq]
-    return results
+        results = Map({})
+        results[item_spec] = Map({})
+        specs_item_type = {self.filter_term:weapon_class}
+        specs_sockets = {self.filter_term:socket_class}
+        specs_level = {self.filter_term:level_required}
+        item_types = tag.parent.find_all(type_filter_term,specs_item_type)
+        socket_rq = tag.parent.find_all(self.item_content,specs_sockets)
+        lvl_rq = tag.parent.find_all(self.item_content,specs_level)
+        results[item_spec]['sockets'] = [t.parent.text.strip() for t in socket_rq]
+        results[item_spec]['item_types'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
+        results[item_spec]['level'] = [t.text.strip() for t in lvl_rq]
+        return results
 
     def _get_setbonus(self,
                       items,
@@ -107,8 +111,7 @@ class ItemTokenizer:
         if item_spec in self.queries.keys():
             return getattr(self,self.queries[item_spec])(item,
                                                          item_name,
-                                                         item_spec,
-                                                         )
+                                                         item_spec)
         else:
             return self._get_all(item, item_spec)
         

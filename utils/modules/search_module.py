@@ -80,7 +80,7 @@ class ItemSearchModule(BaseModule):
                 for tag in tags:
                     if tag:
                         # Find and report all information
-                        self.results[item_name] = self.tokenizer(tag.parent, item_name)
+                        self.results[item_name] = self.tokenizer(tag, item_name)
 
         elif item_spec and item_name:
             #TODO
@@ -91,7 +91,7 @@ class ItemSearchModule(BaseModule):
                                      text=re.compile(item_name))
                 for tag in tags:
                     if tag:
-                        self.results[item_name] = self.tokenizer(tag.parent,
+                        self.results[item_name] = self.tokenizer(tag,
                                                            item_name,
                                                            item_spec=item_spec)
         else:
