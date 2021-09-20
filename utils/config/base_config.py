@@ -11,6 +11,7 @@
 # ===================================================================
 """Config base class implementation"""
 
+import os
 import abc
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -20,7 +21,7 @@ from sanctuary.utils.parser.cli_arguments import Map
 __all__ = ['BaseConfig']
 
 
-class BaseConfig(abc.ABC):
+class BaseConfig(metaclass=abc.ABCMeta):
     """A Base Configuration for Config class
     
     Each config implementation should have a relatively 
@@ -32,7 +33,7 @@ class BaseConfig(abc.ABC):
     These will scale and grow as needs present themselves.
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def __init__(self,
                  name,
                  prefix,
@@ -42,28 +43,27 @@ class BaseConfig(abc.ABC):
         self.name = name
         self.prefix = prefix
         self.args = args
-        self.config_name = args.BOT_TYPE[name].CONFIG
+        self.BOT_TYPE = Map({t:t+'_TOKEN' for t in args.BOT_TYPE.split(args.DELIM)})
+        self.CONFIGS = Map({t.split('/')[0]:t.split('/')[1] for t in args.CONFIGS.split(args.DELIM)})
+        self.SEARCH_ITEMS = Map({t.upper():t for t in args.SEARCH_ITEMS.split(args.DELIM) })
+        self.config_name = name
         self._set_config(self.config_name)
         load_dotenv()
 
-    @abstractmethod
     def _get_bot(self):
         """return bot from set config"""
         return commands.Bot(command_prefix=self.prefix)
 
-    @abstractmethod
     def _get_token_id(self):
         """return dot env token id for discord bot"""
-        return os.getenv(self.args.BOT_TYPE[self.name].NAME)
+        return os.getenv(self.BOT_TYPE[self.config_name])
 
 
-    @abstractmethod
     def _get_server_id(self):
         """return dot env server id for discord server"""
         return os.getenv(self.args.SERVER_ID)
 
 
-    @abstractmethod
     def _set_config(self, config_name):
         """Pull config file from provided name
 
@@ -88,11 +88,12 @@ class BaseConfig(abc.ABC):
             different event types based on a config name 
             and event name.
         """
-        configs = self.args.CONFIGS
-        if config_name in configs.keys():
-            self.config = load_configs(configs[config_name])
+        if config_name in self.CONFIGS.keys():
+            self.config = load_configs()(self.CONFIGS[config_name])
+            print('loaded config',config_name)
         else:
+            print('Did not load config:', config_name)
             default = self.args.DEFAULT_CONFIG
-            self.config = load_configs(configs[default])
+            self.config = load_configs()(self.CONFIGS[default])
 
 

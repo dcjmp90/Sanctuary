@@ -10,36 +10,10 @@ class Map(dict):
     ----
     https://stackoverflow.com/questions/2352181/how-to-use-a-dot-to-access-members-of-dictionary
 
-    Example:
-    m = Map({'first_name': 'Eduardo'}, last_name='Pool', age=24, sports=['Soccer'])
     """
-    def __init__(self, *args, **kwargs):
-        super(Map, self).__init__(*args, **kwargs)
-        for arg in args:
-            if isinstance(arg, dict):
-                for k, v in arg.iteritems():
-                    self[k] = v
-
-        if kwargs:
-            for k, v in kwargs.iteritems():
-                self[k] = v
-
-    def __getattr__(self, attr):
-        return self.get(attr)
-
-    def __setattr__(self, key, value):
-        self.__setitem__(key, value)
-
-    def __setitem__(self, key, value):
-        super(Map, self).__setitem__(key, value)
-        self.__dict__.update({key: value})
-
-    def __delattr__(self, item):
-        self.__delitem__(item)
-
-    def __delitem__(self, key):
-        super(Map, self).__delitem__(key)
-        del self.__dict__[key]
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
 
 class CommandLineArgs:
@@ -50,17 +24,17 @@ class CommandLineArgs:
         parser = argparse.ArgumentParser()
         parser.add_argument('--bot-type',
                             dest='BOT_TYPE',
-                            type=lambda s: Map({'NAME':token+'_TOKEN' for token in s.split(',')}),
+                            type=str,
                             default='MUSIC,LOOKUP,FINDER,CHATBOT',
                             )
         parser.add_argument('--config-map',
                             dest='CONFIGS',
-                            type=lambda s: Map({token.split('/')[0]:token.split('/')[1] for token in s.split(',')}),
+                            type=str,
                             default='MUSIC/music.cfg,LOOKUP/lookup.cfg,FINDER/finder.cfg,CHATBOT/chatbot.cfg',
                             )
         parser.add_argument('--search-items',
                             dest='SEARCH_ITEMS',
-                            type=lambda s: Map({'NAME':token for token in s.split(',')}),
+                            type=str,
                             default='runewords,uniques,sets,base',
                             )
         parser.add_argument('--delimiter',
@@ -95,7 +69,7 @@ class CommandLineArgs:
                             )
         parser.add_argument('--use-bot',
                             dest='BOT_REQUEST',
-                            type=lamda s : str(s).upper(),
+                            type=lambda s : str(s).upper(),
                             required=True,
                             help="REQUIRED -- You will need to pass an argument for the bot type you want.",
                             )

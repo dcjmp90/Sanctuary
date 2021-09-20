@@ -10,9 +10,10 @@
 # ===================================================================
 """A Config class for item lookup"""
 
-import bs4 as soup
+
+import bs4 as bs
 import urllib.request as url_request
-from sanctuary.utils.base.config import BaseConfig
+from sanctuary.utils.config.base_config import BaseConfig
 from sanctuary.utils.parser.cli_arguments import Map
 
 __all__ = ['ItemLookupConfig']
@@ -74,7 +75,8 @@ class ItemLookupConfig(BaseConfig):
                          self.prefix,
                          self.args,
         )
-        self.searchables = [ search.NAME for search in self.args.SEARCH_ITEMS ]
+       
+        self.searchables = [ v for k, v in self.SEARCH_ITEMS.items() ]
         self.bs_parser = Map({})
         
         for name in self.searchables:
@@ -85,9 +87,9 @@ class ItemLookupConfig(BaseConfig):
     def _item_type(self, item_type):
         """Parser for all of type"""
 
-        if item_type in self.bs_parser.keys():
+        if item_type.lower() in self.bs_parser.keys():
             item_names = []
-            _bs_parser = self.bs_parser.item_type
+            _bs_parser = self.bs_parser[item_type.lower()]
 
             for item_container in _bs_parser.find_all(self.config.CONTAINER):
                 item_names.append(item_container.a.get_text())
@@ -104,15 +106,15 @@ class ItemLookupConfig(BaseConfig):
                  item_spec = None,
                  **kwargs,
     ):
-    """Override of the call method"""
+        """Override of the call method"""
 
-    if not item_name:
-        return self._item_type(item_type)
-    elif not item_spec and item_name:
-        # specific item + details search
-        pass
-    else:
-        # deep search
-        pass
+        if not item_name:
+            return self._item_type(item_type)
+        elif not item_spec and item_name:
+            # specific item + details search
+            pass
+        else:
+            # deep search
+            pass
 
             

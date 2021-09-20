@@ -1,4 +1,4 @@
-from parser.cli_arguments import *
+from sanctuary.utils.parser.cli_arguments import *
 
 args = CommandLineArgs.parse_args() 
 

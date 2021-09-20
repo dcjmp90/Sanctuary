@@ -10,10 +10,11 @@
 # Sanctuary seeks to support players needs from trade, to item lookup,
 # and currently seeking ability to support player status tracking.
 # ============================================================================
+import sys
 import os
 import discord
-import args
-import ItemLookupConfig
+from sanctuary.utils import args
+from sanctuary.utils import ItemLookupConfig
 from discord.ext import commands
 
 if args.BOT_REQUEST == 'LOOKUP':
@@ -28,7 +29,11 @@ async def runewords(ctx,
                     item_spec = None,
                     **kwargs,
 ):
-    pprint = config('runewords', item_name, item_spec, **kwargs)
+    pprint = config(item_type='runewords',
+                    item_name=item_name,
+                    item_spec=item_spec,
+                    **kwargs,
+    )
     await ctx.send(pprint)
 
 bot.run(config._get_token_id())
