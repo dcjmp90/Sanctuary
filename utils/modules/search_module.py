@@ -15,6 +15,7 @@
 """SearchModule class implementation"""
 
 from sanctuary.utils.modules.base_module import BaseModule
+from sanctuary.utils.parser.tokenizers import ItemTokenizer
 import bs4 as bs
 import re
 
@@ -33,10 +34,15 @@ class ItemSearchModule(BaseModule):
                  parent_conatiner='article',
                  child_container='span',
                  title_container='h3',
+                 filter_term='class',
+                 title_class='z-sort-name',
     ):
+    self.tokenizer = ItemTokenizer()
     super().__init__(parent_conatiner,
                      child_container,
                      title_container,
+                     filter_term,
+                     title_class,
     )
 
     def _search(self):
@@ -51,8 +57,8 @@ class ItemSearchModule(BaseModule):
     
     def __call__(self,
                  parent_conatiner,
-                 item_name,
-                 item_spec,
+                 item_name = None,
+                 item_spec = None,
                  **kwargs,
     ):
         """TODO: callable details
@@ -68,6 +74,16 @@ class ItemSearchModule(BaseModule):
             #TODO
             for line in parent_conatiner.findAll(self.parent_conatiner):
                 self.results = []
-                tags = link.find_all(self.title_container,text=re.compile(item_name))
+                tags = link.find_all(self.title_container,
+                                     {self.filter_term:self.title_class},
+                                     text=re.compile(item_name),
+                                    )
+                for tag in tags:
+                    if tag:
+                        # Find and report all information
+                        self.results.append(self.tokenizer(item))
+
+        elif item_spec and item_name:
+            #TODO
         else:
             self.results.append("No Data!! How did you get here?!")

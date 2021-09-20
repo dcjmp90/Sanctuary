@@ -32,6 +32,8 @@ class BaseModule(metaclass=abc.ABCMeta):
                  parent_conatiner,
                  child_container,
                  title_container,
+                 filter_term,
+                 title_class,
                  **kwargs,
     ):
     self.parent_conatiner = parent_conatiner
