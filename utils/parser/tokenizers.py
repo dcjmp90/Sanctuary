@@ -10,6 +10,7 @@
 """Tokenizers will handle specific data pulls"""
 
 from sanctuary.utils.parser.cli_arguments import Map
+import re
 
 __all__ = ['ItemTokenizer']
 
@@ -20,6 +21,7 @@ class ItemTokenizer:
     def __init__(self,
                  item_content='span',
                  item_title='h3',
+                 filter_term='class',
     ):
         #TODO
         self.queries = Map({})
@@ -32,23 +34,22 @@ class ItemTokenizer:
                 self.queries[attr] = method
 
     def _get_recipe(self,
-                    item,
+                    items,
                     item_name,
                     item_spec,
-                    filter_term='class',
                     class_name='z-recipes',
     ):
         """Pull Recipe information from item"""
-        specs = {filter_term:class_name}
+        specs = {self.filter_term:class_name}
         results = Map({})
         tags = []
-        for span in item.parent.find_all(self.item_content,specs):
+        for span in items.parent.find_all(self.item_content,specs):
             tags.append(span.text)
         results[item_spec] = tags 
         return results
     
     def _get_stats(self,
-                   item,
+                   items,
                    item_name,
                    item_spec,
     ):
@@ -56,15 +57,29 @@ class ItemTokenizer:
         pass
     
     def _get_requirements(self,
-                          item,
+                          items,
                           item_name,
                           item_spec,
+                          type_filter_term='a',
+                          weapon_class='z-white',
+                          socket_class='zso_rwsock',
+                          level_required='zso_rwlvlrq',
     ):
-    #TODO
-        pass
-    
+    results = Map({})
+    results[item_spec] = Map({})
+    specs_item_type = {self.filter_term:weapon_class}
+    specs_sockets = {self.filter_term:socket_class}
+    specs_level = {self.filter_term:level_required}
+    item_types = items.find_all(type_filter_term,specs_item_type)
+    socket_rq = items.find_all(self.item_content,specs_sockets)
+    lvl_rq = items.find_all(self.item_content,specs_level)
+    results[item_spec]['sockets'] = [t.parent.text.strip() for t in socket_rq]
+    results[item_spec]['item_types'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
+    results[item_spec]['level'] = [t.text.strip() for t in lvl_rq]
+    return results
+
     def _get_setbonus(self,
-                      item,
+                      items,
                       item_name,
                       item_spec,
     ):
@@ -72,17 +87,16 @@ class ItemTokenizer:
         pass
     
     def _get_all(self,
-                 item,
+                 items,
                  item_spec,
     ):
         """Return all attributes of an item"""
         all_attrs = Map({})
         for attr, method in self.queries.items():
             if attr != item_spec:
-                all_attrs[attr] = getattr(self,method)(item,
+                all_attrs[attr] = getattr(self,method)(items,
                                                        item_name,
-                                                       attr,
-                                                       )
+                                                       attr)
         return all_attrs
 
     def __call__(self,

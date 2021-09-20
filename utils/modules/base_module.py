@@ -15,6 +15,7 @@
 """BaseModule base class implementation"""
 
 import abc
+from sanctuary.utils.parser.cli_arguments import Map
 
 __all__ = ['BaseModule']
 
@@ -39,7 +40,7 @@ class BaseModule(metaclass=abc.ABCMeta):
     self.parent_conatiner = parent_conatiner
     self.child_container = child_container
     self.title_container = title_container
-    self.results = []
+    self.results = Map({})
 
     @abc.abstractmethod
     def __iter__(self):

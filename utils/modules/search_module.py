@@ -16,6 +16,7 @@
 
 from sanctuary.utils.modules.base_module import BaseModule
 from sanctuary.utils.parser.tokenizers import ItemTokenizer
+from sanctuary.utils.parser.cli_arguments import Map
 import bs4 as bs
 import re
 
@@ -66,14 +67,12 @@ class ItemSearchModule(BaseModule):
         if not item_name and not item_spec:
             #TODO
             for link in parent_conatiner.findAll(self.parent_conatiner):
-                self.results = []
-                tags = link.find_all(self.title_container)
+                tags = link.find_all(self.title_container,{self.filter_term:self.title_class})
                 if tags:
-                    self.results.append([''.join(s.text for s in tags)])
+                    self.results['item_names'] = [''.join(s.text for s in tags)]
         elif not item_spec and item_name:
             #TODO
-            for line in parent_conatiner.findAll(self.parent_conatiner):
-                self.results = []
+            for link in parent_conatiner.findAll(self.parent_conatiner):
                 tags = link.find_all(self.title_container,
                                      {self.filter_term:self.title_class},
                                      text=re.compile(item_name),
@@ -81,9 +80,19 @@ class ItemSearchModule(BaseModule):
                 for tag in tags:
                     if tag:
                         # Find and report all information
-                        self.results.append(self.tokenizer(tag.parent, item_name))
+                        self.results[item_name] = self.tokenizer(tag.parent, item_name)
 
         elif item_spec and item_name:
             #TODO
+            specs = {self.filter_term:self.title_class}
+            for link in parent_conatiner.findAll(self.parent_conatiner):
+                tags = link.find_all(self.title_container,
+                                     specs,
+                                     text=re.compile(item_name))
+                for tag in tags:
+                    if tag:
+                        self.results[item_name] = self.tokenizer(tag.parent,
+                                                           item_name,
+                                                           item_spec=item_spec)
         else:
             self.results.append("No Data!! How did you get here?!")
