@@ -94,9 +94,10 @@ class ItemSearchModule(BaseModule):
                                      text=re.compile(item_name))
                 for tag in tags:
                     if tag:
+                        print('Requirement Tags found!')
                         results.append(self.tokenizer(tag,
-                                                item_name,
-                                                item_spec=item_spec))
+                                                      item_name,
+                                                      item_spec=item_spec))
             return results
         else:
             self.results.append("No Data!! How did you get here?!")

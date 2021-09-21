@@ -27,7 +27,8 @@ class ItemTokenizer:
         self.queries = Map({})
         self.item_content = item_content
         self.item_title = item_title
-
+        self.filter_term = filter_term
+        
         for method in dir(self):
             if method.startswith('_get'):
                 attr = method.split('_')[-1]
