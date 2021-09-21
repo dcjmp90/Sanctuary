@@ -30,8 +30,8 @@ async def runewords(ctx,
 ):
     print('item_name:',item_name,'\n','item_spec:',item_spec)
     pprint = config(item_type='runewords',
-                    item_name=item_name.strip(),
-                    item_spec=item_spec.strip(),
+                    item_name=item_name,
+                    item_spec=item_spec,
     )
     await ctx.send(pprint)
 
