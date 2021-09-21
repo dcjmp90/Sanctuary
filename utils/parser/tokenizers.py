@@ -15,7 +15,30 @@ import re
 __all__ = ['RunewordItemTokenizer']
 
 class RunewordItemTokenizer:
-    """TODO details
+    """Runeword Tokenizer 
+
+    This will parse web based information
+    overall/regardless of the type of 
+    query made with an item name, this
+    will return a Map of values with 
+    each key defining a speciifc list
+    of information
+
+    Pameters
+    --------
+
+    item_content : str
+        A string defaulted to 'span' for what container
+            the content will belong to on the site
+    
+    item_title : str
+        A string defaulted to 'h3' for what container
+            holds the title for runeword items
+    
+    filter_term : str
+        A string defaulted to 'class' for bs4 filtering usage
+            right now we are filtering by class names of containers
+
     """
 
     def __init__(self,
@@ -23,7 +46,6 @@ class RunewordItemTokenizer:
                  item_title='h3',
                  filter_term='class',
     ):
-        #TODO
         self.queries = Map({})
         self.item_content = item_content
         self.item_title = item_title
@@ -35,16 +57,40 @@ class RunewordItemTokenizer:
                 self.queries[attr] = method
 
     def _get_recipe(self,
-                    items,
+                    tag,
                     item_name,
                     item_spec,
                     class_name='z-recipes',
     ):
-        """Pull Recipe information from item"""
+        """Pull Recipe information from item
+        
+        Recipe Example:
+
+            >>> ?runewords Spirit recipe
+            ... {'recipe' : ['Tal', 'Thul', 'Ort', 'Amn']}
+        
+        Parameters
+        ----------
+
+        tag : bs4.element.ResultSet
+            The result set is a searchable set of strings 
+                that pertain to a specific query of a site
+        
+        item_name : str
+            This will be the item from top level search used only 
+                to keep a specific pattern to the Map built
+        
+        item_spec : str
+            This will be used to define the list returned as a key value
+        
+        class_name : str
+            A string defaulted to 'z-recipes' for a specific search
+                of filter term when using find_all
+        """
         specs = {self.filter_term:class_name}
         results = Map({})
         tags = []
-        for span in items.parent.find_all(self.item_content,specs):
+        for span in tag.parent.find_all(self.item_content,specs):
             tags.append(span.text)
         results[item_spec] = tags 
         return results
@@ -55,7 +101,31 @@ class RunewordItemTokenizer:
                    item_spec,
                    item_stats='z-smallstats',
     ):
-        #TODO
+        """Pull Stats from item
+        
+        Stats Example:
+
+            >>> ?runewords Spirit stats
+            ... {'stats' : ['+2 to all skills', ...]}
+        
+        Parameters
+        ----------
+
+        tag : bs4.element.ResultSet
+            The result set is a searchable set of strings 
+                that pertain to a specific query of a site
+        
+        item_name : str
+            This will be the item from top level search used only 
+                to keep a specific pattern to the Map built
+        
+        item_spec : str
+            This will be used to define the list returned as a key value
+        
+        class_name : str
+            A string defaulted to 'z-smallstats' for a specific search
+                of filter term when using find_all
+        """
         results = Map({})
         specs_stats = {self.filter_term:item_stats}
         heap = tag.parent.find_all(self.item_content,specs_stats)
@@ -71,6 +141,48 @@ class RunewordItemTokenizer:
                           socket_class='zso_rwsock',
                           level_required='zso_rwlvlrq',
     ):
+        """Pull Requirements from item
+        
+        Requirements Example:
+
+            >>> ?runewords Spirit requirements
+            ... {'requirements' : {
+                                    'item'   : ['sword', 'shield'],
+                                    'sockets': ['4 sockets', '4 sockets']
+                                    'level'  : ['25'],
+                                    .
+                                    .
+                                    .
+                                   }
+                }
+        
+        Parameters
+        ----------
+
+        tag : bs4.element.ResultSet
+            The result set is a searchable set of strings 
+                that pertain to a specific query of a site
+        
+        item_name : str
+            This will be the item from top level search used only 
+                to keep a specific pattern to the Map built
+        
+        item_spec : str
+            This will be used to define the list returned as a key value
+        
+        weapon_class : str
+            This can be armor or weapon or any type of item, but it
+                will be defaulted to 'z-white' as it is unique to 
+                the items specified
+        
+        socket_class : str
+            A string that is defaulted to 'zso_rwsock' which
+                is intuitively named for a socket requirement class container
+        
+        level_required : str
+            A string that is defaulted to 'zso_rwlvlrq'
+                also intuitively name for a lvl requirement class container
+        """
         results = Map({})
         specs_item_type = {self.filter_term:weapon_class}
         specs_sockets = {self.filter_term:socket_class}
@@ -88,7 +200,24 @@ class RunewordItemTokenizer:
                  item_name,
                  item_spec,
     ):
-        """Return all attributes of an item"""
+        """Pull All details from item
+        
+        See above for individual examples
+        
+        Parameters
+        ----------
+
+        tag : bs4.element.ResultSet
+            The result set is a searchable set of strings 
+                that pertain to a specific query of a site
+        
+        item_name : str
+            This will be the item from top level search used only 
+                to keep a specific pattern to the Map built
+        
+        item_spec : str
+            This will be used to define the list returned as a key value
+        """
         all_attrs = Map({})
         for attr, method in self.queries.items():
             if attr != item_spec:
@@ -102,6 +231,8 @@ class RunewordItemTokenizer:
                  item_name,
                  item_spec = 'all',
     ):
+        """Call override to handle specific query if any"""
+        
         if item_spec in self.queries.keys():
             return getattr(self,self.queries[item_spec])(item,
                                                          item_name,
