@@ -1,4 +1,5 @@
 from sanctuary.utils.parser.cli_arguments import *
+from sanctuary.utils.parser.logger import *
 
 args = CommandLineArgs.parse_args() 
 

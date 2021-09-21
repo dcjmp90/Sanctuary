@@ -79,7 +79,7 @@ class ItemLookupConfig(BaseConfig):
        
         self.searchables = [ v for k, v in self.SEARCH_ITEMS.items() ]
         self.bs_parser = Map({})
-        self.searchable = ItemSearchModule()
+        self.searchable = ItemSearchModule(self.config)
         
         for name in self.searchables:
             url = url_request.urlopen(self.args.BASE_URL+name)
@@ -111,7 +111,7 @@ class ItemLookupConfig(BaseConfig):
             return "No known item of type {}. KYS.".format(item_type)
         else:
             return self.searchable(parent_container,
-                            item_name,
-                            item_spec,
-                            **kwargs)
+                                   item_name,
+                                   item_spec,
+                                   **kwargs)
             

@@ -44,6 +44,12 @@ class BaseModule(metaclass=abc.ABCMeta):
         self.title_class = title_class
         self.results = Map({})
 
+    def _get_stats(self):
+        """stats information"""
+
+    def _get_requirements(self):
+        """get item requirements"""
+
     def __iter__(self):
         """override iterator"""
 

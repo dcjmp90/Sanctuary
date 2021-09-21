@@ -15,9 +15,9 @@
 """SearchModule class implementation"""
 
 from sanctuary.utils.modules.base_module import BaseModule
-from sanctuary.utils.parser.tokenizers import ItemTokenizer
 from sanctuary.utils.parser.cli_arguments import Map
 import bs4 as bs
+from importlib import import_module
 import re
 
 __all__ = ['ItemSearchModule']
@@ -32,13 +32,16 @@ class ItemSearchModule(BaseModule):
     callable, and every query will be handled the exact same way.
     """
     def __init__(self,
+                 config,
                  parent_container='article',
                  child_container='span',
                  title_container='h3',
                  filter_term='class',
                  title_class='z-sort-name',
     ):
-        self.tokenizer = ItemTokenizer()
+        self.config = config
+        self.tokenizer = getattr(import_module(config.TOKENIZER_PACKAGE), 
+                                               config.TOKENIZER_MODULE).__init__()
         super().__init__(parent_container,
                         child_container,
                         title_container,
@@ -64,14 +67,16 @@ class ItemSearchModule(BaseModule):
     ):
         """TODO: callable details
         """
-        results = []
 
         if not item_name and not item_spec:
             #TODO
+            results = Map({})
+            results['Item Names'] = []
+
             for link in parent_container:
                 tags = link.find_all(self.title_container,{self.filter_term:self.title_class})
                 if tags:
-                    results.append([s.text for s in tags])
+                    results['Item Names'].append([s.text for s in tags])
             return results
         elif not item_spec and item_name:
             #TODO
@@ -94,10 +99,8 @@ class ItemSearchModule(BaseModule):
                                      text=re.compile(item_name))
                 for tag in tags:
                     if tag:
-                        print('Requirement Tags found!')
-                        results.append(self.tokenizer(tag,
-                                                      item_name,
-                                                      item_spec=item_spec))
-            return results
+                        return self.tokenizer(tag,
+                                              item_name,
+                                              item_spec=item_spec)
         else:
             self.results.append("No Data!! How did you get here?!")

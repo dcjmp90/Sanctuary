@@ -15,6 +15,7 @@ import os
 import discord
 from sanctuary.utils import args
 from sanctuary.utils import ItemLookupConfig
+from sanctuary.utils import RunewordLogger
 from discord.ext import commands
 
 if args.BOT_REQUEST == 'LOOKUP':
@@ -25,14 +26,18 @@ bot = config._get_bot()
 
 @bot.command(name='runewords')
 async def runewords(ctx,
-                    item_name = None,
-                    item_spec = None,
+                    item_name= None,
+                    item_spec= None,
 ):
-    print('item_name:',item_name,'\n','item_spec:',item_spec)
+    
     pprint = config(item_type='runewords',
                     item_name=item_name,
-                    item_spec=item_spec,
-    )
+                    item_spec=item_spec)
+
+    logger = RunewordLogger(pprint,
+                            item_name,
+                            item_spec)
+    pprint = str(logger)
     await ctx.send(pprint)
 
 bot.run(config._get_token_id())
