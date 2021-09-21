@@ -23,6 +23,13 @@ if args.BOT_REQUEST == 'LOOKUP':
 
 bot = config._get_bot()
 
+@bot.event
+async def on_ready():
+    print('Botz R Live!')
+    await bot.send_file('889368176327032962',
+                        "https://fontmeme.com/permalink/210920/fcf152d904bb277e9c26e1e75d9f0c5b.png",
+                        content="** Stay a while and listen! ** \n Powered by Santuary!",
+                        filename="")
 
 @bot.command(name='runewords')
 async def runewords(ctx,

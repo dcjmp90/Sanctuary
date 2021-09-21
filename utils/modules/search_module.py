@@ -41,7 +41,7 @@ class ItemSearchModule(BaseModule):
     ):
         self.config = config
         self.tokenizer = getattr(import_module(config.TOKENIZER_PACKAGE), 
-                                               config.TOKENIZER_MODULE).__init__()
+                                               config.TOKENIZER_MODULE)()
         super().__init__(parent_container,
                         child_container,
                         title_container,
