@@ -10,6 +10,7 @@
 """Tokenizers will handle specific data pulls"""
 
 from sanctuary.utils.parser.cli_arguments import Map
+from sanctuary.components.modules.items import RuneWordItem
 import re
 
 __all__ = ['RunewordItemTokenizer']
@@ -26,6 +27,10 @@ class RunewordItemTokenizer:
 
     Pameters
     --------
+
+    item : sanctuary.components.BaseItem
+        This will have the base class of BaseItem, but
+            this will be any type of item.
 
     item_content : str
         A string defaulted to 'span' for what container
@@ -89,12 +94,11 @@ class RunewordItemTokenizer:
         """
         specs = {self.filter_term:class_name}
         results = Map({})
-        results[item_name] = Map({})
         tags = []
         for span in tag.parent.find_all(self.item_content,specs):
             tags.append(span.text)
-        results[item_name][item_spec] = tags 
-        return results
+        results[item_spec] = tags 
+        self.item._add(results)
     
     def _get_stats(self,
                    tag,
@@ -128,11 +132,10 @@ class RunewordItemTokenizer:
                 of filter term when using find_all
         """
         results = Map({})
-        results[item_name] = Map({})
         specs_stats = {self.filter_term:item_stats}
         heap = tag.parent.find_all(self.item_content,specs_stats)
-        results[item_name][item_spec] = [t.text for t in heap]
-        return results
+        results[item_spec] = [t.text for t in heap]
+        self.item._add(results)
     
     def _get_requirements(self,
                           tag,
@@ -186,17 +189,16 @@ class RunewordItemTokenizer:
                 also intuitively name for a lvl requirement class container
         """
         results = Map({})
-        results[item_name] = Map({})
         specs_item_type = {self.filter_term:weapon_class}
         specs_sockets = {self.filter_term:socket_class}
         specs_level = {self.filter_term:level_required}
         item_types = tag.parent.find_all(type_filter_term,specs_item_type)
         socket_rq = tag.parent.find_all(self.item_content,specs_sockets)
         lvl_rq = tag.parent.find_all(self.item_content,specs_level)
-        results[item_name]['socket_requirements'] = [t.parent.text.strip() for t in socket_rq]
-        results[item_name]['item_types'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
-        results[item_name]['level_rq'] = [t.text.strip() for t in lvl_rq]
-        return results
+        results['socket_requirement'] = [t.parent.text.strip() for t in socket_rq]
+        results['item_type'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
+        results['level_required'] = [t.text.strip() for t in lvl_rq]
+        self.item._add(results)
     
     def _get_all(self,
                  tag,
@@ -221,13 +223,11 @@ class RunewordItemTokenizer:
         item_spec : str
             This will be used to define the list returned as a key value
         """
-        all_attrs = Map({})
-        all_attrs[item_name] = Map({})
         for attr, method in self.queries.items():
             if attr != item_spec:
-                all_attrs[item_name][attr] = getattr(self,method)(tag,
-                                                       item_name,
-                                                       attr)
+                self.item._add(getattr(self,method)(tag,
+                                                    item_name,
+                                                    attr))
         return all_attrs
 
     def __call__(self,
@@ -238,11 +238,12 @@ class RunewordItemTokenizer:
         """Call override to handle specific query if any"""
 
         if item_spec in self.queries.keys():
-            return getattr(self,self.queries[item_spec])(item,
-                                                         item_name,
-                                                         item_spec)
+            getattr(self,self.queries[item_spec])(item,
+                                                  item_name,
+                                                  item_spec)
+            return self.item
         else:
-            return {'Error':'Does not exist or query was in error!'}
+            raise ValueError('Error: Value does not exist or query was in error!')
         
     
 
