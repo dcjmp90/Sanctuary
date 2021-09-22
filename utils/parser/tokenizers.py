@@ -89,10 +89,11 @@ class RunewordItemTokenizer:
         """
         specs = {self.filter_term:class_name}
         results = Map({})
+        results[item_name] = Map({})
         tags = []
         for span in tag.parent.find_all(self.item_content,specs):
             tags.append(span.text)
-        results[item_spec] = tags 
+        results[item_name][item_spec] = tags 
         return results
     
     def _get_stats(self,
@@ -127,9 +128,10 @@ class RunewordItemTokenizer:
                 of filter term when using find_all
         """
         results = Map({})
+        results[item_name] = Map({})
         specs_stats = {self.filter_term:item_stats}
         heap = tag.parent.find_all(self.item_content,specs_stats)
-        results[item_spec] = [t.text for t in heap]
+        results[item_name][item_spec] = [t.text for t in heap]
         return results
     
     def _get_requirements(self,
@@ -184,13 +186,14 @@ class RunewordItemTokenizer:
                 also intuitively name for a lvl requirement class container
         """
         results = Map({})
+        results[item_name] = Map({})
         specs_item_type = {self.filter_term:weapon_class}
         specs_sockets = {self.filter_term:socket_class}
         specs_level = {self.filter_term:level_required}
         item_types = tag.parent.find_all(type_filter_term,specs_item_type)
         socket_rq = tag.parent.find_all(self.item_content,specs_sockets)
         lvl_rq = tag.parent.find_all(self.item_content,specs_level)
-        results[item_name] = {'socket_requirement': [t.parent.text.strip() for t in socket_rq]}                   
+        results[item_name]['socket_requirements'] = [t.parent.text.strip() for t in socket_rq]
         results[item_name]['item_types'] = [re.sub(r'\s*','',t.text.strip().split('\n')[-1]) for t in item_types]
         results[item_name]['level_rq'] = [t.text.strip() for t in lvl_rq]
         return results
@@ -219,9 +222,10 @@ class RunewordItemTokenizer:
             This will be used to define the list returned as a key value
         """
         all_attrs = Map({})
+        all_attrs[item_name] = Map({})
         for attr, method in self.queries.items():
             if attr != item_spec:
-                all_attrs[attr] = getattr(self,method)(tag,
+                all_attrs[item_name][attr] = getattr(self,method)(tag,
                                                        item_name,
                                                        attr)
         return all_attrs
@@ -232,7 +236,7 @@ class RunewordItemTokenizer:
                  item_spec = 'all',
     ):
         """Call override to handle specific query if any"""
-        
+
         if item_spec in self.queries.keys():
             return getattr(self,self.queries[item_spec])(item,
                                                          item_name,
