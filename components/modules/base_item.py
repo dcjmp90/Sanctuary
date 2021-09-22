@@ -21,9 +21,11 @@ class BaseItem(metaclass=abc.ABCMeta):
     """TODO
     """
     def __init__(self,
-                 item_specs,
+                 item_name,
     ):
-        self.item_specs = item_specs
+        self.item_name = item_name
+        self.string_builder = '** '+item_name+' ** :\n'
+        self.compiled_attrs = Map({})
         self.queries = Map({})
 
         for method in dir(self):

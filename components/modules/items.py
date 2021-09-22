@@ -27,13 +27,18 @@ class RuneWordItem(BaseItem):
     item_type (e.g, Spirit has both Sword and Shield)
 
     """
-    def __init__(self,
-                 item_name,
-                 item_specs,
-    ):
-        #TODO
-        super().__init__(item_specs)
-        self.results = Map({item_name : Map({})})
+    def __init__(self, item_name):
+        super().__init__(item_name)
+
+        for method in dir(self):
+
+            if method.startswith('_add'):
+                attr = method.split('add_')[-1]
+                self.compiled_attrs[attr] = method
+            
+            if method.startswith('_get'):
+                attr = method.split('get_')[-1]
+                self.queries[attr] = method
 
     def _get_recipe(self, specs):
         """get the recipe for this item"""
@@ -62,6 +67,12 @@ class RuneWordItem(BaseItem):
         """get the recipe for this item"""
         #TODO
         raise NotImplementedError('You must implement this in subclass!')
+    
+    def _add(self, dict_like):
+        """Add dict to this object"""
+        for k, v in dict_like.items():
+            if k in self.compiled_attrs.keys():
+                getattr(self, self.compiled_attrs[k])(v)
 
     def _add_socket_requirement(self, specs)"
         """get the number of sockets required"""
