@@ -65,7 +65,7 @@ class ItemSearchModule(BaseModule):
                                      {self.config.FILTER_TERM:self.config.TITLE_CLASS},
                                     )
                 if tags:
-                    results['ITEM_NAME'].append([s.text for s in tags])
+                    results['ITEM_NAME'] = [s.text for s in tags]
             return results
         elif not item_spec and item_name:
 

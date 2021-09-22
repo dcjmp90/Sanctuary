@@ -41,13 +41,14 @@ if args.BOT_REQUEST == 'LOOKUP':
             out = ''
             for k, v in item.items():
                 out += k 
+                print(v)
                 if isinstance(v,list):
                     out += ':\n'+'\n'.join(v)
                 else:
                     out += ': '+v
         else:
             out = item()
-        
+        print(out)
         await ctx.send(out)
 
 
