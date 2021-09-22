@@ -108,7 +108,7 @@ class ItemLookupConfig(BaseConfig):
         parent_container = self._item_type(item_type)
 
         if parent_container is None:
-            return "No known item of type {}. KYS.".format(item_type)
+            raise ValueError('No known item of type {}. KYS.'.format(item_type))
         else:
             return self.searchable(parent_container,
                                    item_name,
