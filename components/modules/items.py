@@ -26,6 +26,12 @@ class RuneWordItem(BaseItem):
     A RuneWord could have multiple types of
     item_type (e.g, Spirit has both Sword and Shield)
 
+    Parameters
+    ----------
+
+    item_name : str
+        The name of the specific runeword item query
+
     """
     def __init__(self, item_name):
         super().__init__(item_name)
@@ -42,13 +48,41 @@ class RuneWordItem(BaseItem):
             self.string_builder += self.build_attrs[k]
 
     def _add(self, dict_like):
-        """Add dict to this object"""
+        """Add dict to this object
+        
+        This can be more that one set of key:value
+            and each will be handled independently 
+        
+        Example of a dict_like object:
+
+            Case 1: Single key-value
+            ------------------------
+                __dict__ = {'recipe' : ['Tal', 'Thul', 'Ort', 'Amn']}
+
+            Case 2: Many key-value
+            ----------------------      
+                __dict__ = {'socket_requirement' : ['4 sockets', '4 sockets'],
+                                    'item_type' : ['sword', 'shield'],
+                            'level_requirement' : ['25']
+                }
+        
+        Parameters
+        ----------
+
+        dict_like : dict
+            A dictionary as described as above
+
+        """
         for k, v in dict_like.items():
             if k in self.compiled_attrs.keys():
                 getattr(self, self.compiled_attrs[k])(v)
 
     def _add_recipe(self, specs, sep='>>'):
-        """get the recipe for this item"""
+        """get the recipe for this item
+        
+
+        
+        """
         self.build_attrs[1] = '** Recipe ** : '+sep.join(specs) +'\n'
 
     def _add_socket_requirement(self, specs):
