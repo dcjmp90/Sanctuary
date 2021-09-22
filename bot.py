@@ -37,9 +37,7 @@ if args.BOT_REQUEST == 'LOOKUP':
                         item_name=item_name,
                         item_spec=item_spec)
 
-        if isinstance(item, RuneWordItem):
-            out = item()
-        elif isinstance(item, dict):
+        if isinstance(item, dict):
             out = ''
             for k, v in item.items():
                 out += k 
@@ -47,6 +45,8 @@ if args.BOT_REQUEST == 'LOOKUP':
                     out += ':\n'+'\n'.join(v)
                 else:
                     out += ': '+v
+        else:
+            out = item()
         
         await ctx.send(out)
 
