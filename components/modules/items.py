@@ -96,7 +96,7 @@ class RuneWordItem(BaseItem):
     
     def _add_stats(self, specs):
         """get the stats for the item"""
-        for idx, priority in range(5,len(specs)*5+1,3)):
+        for idx, priority in enumerate(range(5,len(specs)*5+1,3)):
             self.build_attrs[priority] = '\t\t'+specs[idx]+'\n'
     
     def _add_item_type(self, specs):
