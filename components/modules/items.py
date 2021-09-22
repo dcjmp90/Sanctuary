@@ -70,10 +70,10 @@ class RuneWordItem(BaseItem):
         for idx, priority in enumerate(range(3,len(specs)*3+1,3)):
             self.build_attrs[priority+1] = specs[idx]+'\n'
 
-    def __call__(self, specs):
+    def __call__(self):
         """callable should be the main handler"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
+        self._build()
+        return self.string_builder
 
 
 class SetItem(BaseItem):
