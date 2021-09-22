@@ -15,7 +15,7 @@ import bs4 as bs
 from sanctuary.components.modules.base_item import BaseItem
 from sanctuary.utils.parser.cli_arguments import Map
 
-__all__ = ['RuneWordItem']
+__all__ = ['RuneWordItem, SetItem']
 
 class RuneWordItem(BaseItem):
     """A Runeword Item
@@ -35,62 +35,40 @@ class RuneWordItem(BaseItem):
             if method.startswith('_add'):
                 attr = method.split('add_')[-1]
                 self.compiled_attrs[attr] = method
-            
-            if method.startswith('_get'):
-                attr = method.split('get_')[-1]
-                self.queries[attr] = method
 
-    def _get_recipe(self, specs):
-        """get the recipe for this item"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
+    def _build(self):
+        """Build all"""
+        for k in sorted(self.build_attrs.keys()):
+            self.string_builder += self.build_attrs[k]
 
-    def _get_socket_requirement(self, specs):
-        """get the number of sockets required"""
-
-    def _get_level_required(self, specs):
-        """get the level requirement"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
-    
-    def _get_stats(self, specs):
-        """get the stats for the item"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
-    
-    def _get_item_type(self, specs):
-        """get the items base type"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
-
-    def _add_recipe(self, specs):
-        """get the recipe for this item"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
-    
     def _add(self, dict_like):
         """Add dict to this object"""
         for k, v in dict_like.items():
             if k in self.compiled_attrs.keys():
                 getattr(self, self.compiled_attrs[k])(v)
 
+    def _add_recipe(self, specs, sep='>>'):
+        """get the recipe for this item"""
+        self.build_attrs[1] = '** Recipe ** : '+sep.join(specs) +'\n'
+
     def _add_socket_requirement(self, specs):
         """get the number of sockets required"""
+        for idx, priority in enumerate(range(3,len(specs)*3+1,3)):
+            self.build_attrs[priority] = '** Build with ** : '+specs[idx]
 
     def _add_level_required(self, specs):
         """get the level requirement"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
+        self.build_attrs[2] = '** Level Required ** : '+''.join(specs)
     
     def _add_stats(self, specs):
         """get the stats for the item"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
+        for idx, priority in range(5,len(specs)*5+1,3)):
+            self.build_attrs[priority] = '\t\t'+specs[idx]+'\n'
     
     def _add_item_type(self, specs):
         """get the items base type"""
-        #TODO
-        raise NotImplementedError('You must implement this in subclass!')
+        for idx, priority in enumerate(range(3,len(specs)*3+1,3)):
+            self.build_attrs[priority+1] = specs[idx]+'\n'
 
     def __call__(self, specs):
         """callable should be the main handler"""

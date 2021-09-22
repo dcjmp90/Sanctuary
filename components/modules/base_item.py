@@ -24,9 +24,10 @@ class BaseItem(metaclass=abc.ABCMeta):
                  item_name,
     ):
         self.item_name = item_name
-        self.string_builder = '** '+item_name+' ** :\n'
+        self.string_builder = '** '+item_name+' ** :\n\n'
         self.compiled_attrs = Map({})
         self.queries = Map({})
+        self.build_attrs = Map({})
 
         for method in dir(self):
             if method.startswith('_get'):
