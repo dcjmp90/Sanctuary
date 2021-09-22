@@ -1,1 +1,1 @@
-from sanctuary.modules import *
+from sanctuary.components.modules import *
