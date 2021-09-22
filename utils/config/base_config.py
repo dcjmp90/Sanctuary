@@ -91,7 +91,8 @@ class BaseConfig(metaclass=abc.ABCMeta):
             print('loaded config',config_name)
         else:
             print('Did not load config:', config_name)
-            default = self.args.DEFAULT_CONFIG
-            self.config = load_configs()(self.CONFIGS[default])
+            raise ValueError('What in the sh*t are you trying to load?...\''
+                            +config_name
+                            +'\' doesn\'t exist')
 
 
