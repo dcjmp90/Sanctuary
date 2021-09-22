@@ -31,14 +31,7 @@ class ItemSearchModule(BaseModule):
     This Item Module class will take in a specific type to search on
     callable, and every query will be handled the exact same way.
     """
-    def __init__(self,
-                 config,
-                 parent_container='article',
-                 child_container='span',
-                 title_container='h3',
-                 filter_term='class',
-                 title_class='z-sort-name',
-    ):
+    def __init__(self, config):
         self.tokenizer = getattr(import_module(config.TOKENIZER_PACKAGE), 
                                                config.TOKENIZER_MODULE)()
         super().__init__(config)
