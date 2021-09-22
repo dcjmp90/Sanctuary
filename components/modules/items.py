@@ -15,7 +15,7 @@ import bs4 as bs
 from sanctuary.components.modules.base_item import BaseItem
 from sanctuary.utils.parser.cli_arguments import Map
 
-__all__ = ['RuneWordItem, SetItem']
+__all__ = ['RuneWordItem', 'SetItem']
 
 class RuneWordItem(BaseItem):
     """A Runeword Item
