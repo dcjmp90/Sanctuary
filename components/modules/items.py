@@ -40,7 +40,7 @@ class RuneWordItem(BaseItem):
         #TODO
         raise NotImplementedError('You must implement this in subclass!')
 
-    def _get_socket_requirement(self, specs)"
+    def _get_socket_requirement(self, specs):
         """get the number of sockets required"""
 
     def _get_level_required(self, specs):
