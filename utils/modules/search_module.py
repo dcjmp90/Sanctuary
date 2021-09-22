@@ -65,7 +65,7 @@ class ItemSearchModule(BaseModule):
                                      {self.config.FILTER_TERM:self.config.TITLE_CLASS},
                                     )
                 if tags:
-                    results['Item Names'].append([s.text for s in tags])
+                    results['ITEM_NAMES'].append([s.text for s in tags])
             return results
         elif not item_spec and item_name:
 
@@ -92,4 +92,6 @@ class ItemSearchModule(BaseModule):
                                               item_name,
                                               item_spec=item_spec)
         else:
-            self.results.append("No Data!! How did you get here?!")
+            msg = 'No Data!! How did you get here with \''+item_name+'\'?!'
+            print(msg)
+            return Map({'ITEM_NAME':[msg]})
