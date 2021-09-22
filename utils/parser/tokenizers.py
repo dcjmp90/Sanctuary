@@ -236,6 +236,8 @@ class RunewordItemTokenizer:
                  item_spec = 'all',
     ):
         """Call override to handle specific query if any"""
+        
+        self.item = RuneWordItem(item_name) 
 
         if item_spec in self.queries.keys():
             getattr(self,self.queries[item_spec])(item,
