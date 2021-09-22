@@ -16,6 +16,7 @@ import discord
 from sanctuary.utils import args
 from sanctuary.utils import ItemLookupConfig
 from sanctuary.utils import RunewordLogger
+from sanctuary.components import RuneWordItem
 from discord.ext import commands
 
 if args.BOT_REQUEST == 'LOOKUP':
@@ -26,24 +27,31 @@ if args.BOT_REQUEST == 'LOOKUP':
     #@bot.event
     #async def on_ready():
 
-    @bot.command(name='runewords')
+    @bot.command(name='runewords', aliases=['runeword', 'runes', 'rw'])
     async def runewords(ctx,
                         item_name= None,
                         item_spec= None,
     ):
         
-        pprint = config(item_type='runewords',
+        item = config(item_type='runewords',
                         item_name=item_name,
                         item_spec=item_spec)
 
-        logger = RunewordLogger(pprint,
-                                item_name,
-                                item_spec)
-        pprint = str(logger)
-        await ctx.send(pprint)
+        if isinstance(item, RuneWordItem):
+            out = item()
+        elif isinstance(item, dict):
+            out = ''
+            for k, v in item.items():
+                out += k 
+                if isinstance(v,list):
+                    out += ':\n'+'\n'.join(v)
+                else:
+                    out += ': '+v
+        
+        await ctx.send(out)
 
 
-    @bot.command(name='sets')
+    @bot.command(name='sets', aliases=['set','setitem','itemset'])
     async def runewords(ctx,
                         item_name= None,
                         item_spec= None,
@@ -53,7 +61,7 @@ if args.BOT_REQUEST == 'LOOKUP':
         await ctx.send("Sets are still in development RiP...")
 
 
-    @bot.command(name='uniques')
+    @bot.command(name='uniques', aliases=['unique', 'uniqueitem'])
     async def runewords(ctx,
                         item_name= None,
                         item_spec= None,

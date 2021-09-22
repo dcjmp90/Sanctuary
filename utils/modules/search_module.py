@@ -65,7 +65,7 @@ class ItemSearchModule(BaseModule):
                                      {self.config.FILTER_TERM:self.config.TITLE_CLASS},
                                     )
                 if tags:
-                    results['ITEM_NAMES'].append([s.text for s in tags])
+                    results['ITEM_NAME'].append([s.text for s in tags])
             return results
         elif not item_spec and item_name:
 
@@ -77,7 +77,7 @@ class ItemSearchModule(BaseModule):
                 for tag in tags:
                     if tag:
                         # Find and report all information
-                        self.results[item_name] = self.tokenizer(tag, item_name)
+                        return self.tokenizer(tag, item_name)
 
         elif item_spec and item_name:
 
