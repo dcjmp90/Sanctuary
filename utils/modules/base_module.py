@@ -30,18 +30,10 @@ class BaseModule(metaclass=abc.ABCMeta):
     """
 
     def __init__(self,
-                 parent_container,
-                 child_container,
-                 title_container,
-                 filter_term,
-                 title_class,
+                 config,
                  **kwargs,
     ):
-        self.parent_container = parent_container
-        self.child_container = child_container
-        self.title_container = title_container
-        self.filter_term = filter_term
-        self.title_class = title_class
+        self.config = config
         self.results = Map({})
 
     def _get_stats(self):
