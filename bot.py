@@ -20,31 +20,46 @@ from discord.ext import commands
 
 if args.BOT_REQUEST == 'LOOKUP':
     config = ItemLookupConfig(args.BOT_REQUEST, args)
+    bot = config._get_bot()
 
-bot = config._get_bot()
+    #TODO
+    #@bot.event
+    #async def on_ready():
 
-@bot.event
-async def on_ready():
-    print('Botz R Live!')
-    await bot.send_file('889368176327032962',
-                        "https://fontmeme.com/permalink/210920/fcf152d904bb277e9c26e1e75d9f0c5b.png",
-                        content="** Stay a while and listen! ** \n Powered by Santuary!",
-                        filename="")
+    @bot.command(name='runewords')
+    async def runewords(ctx,
+                        item_name= None,
+                        item_spec= None,
+    ):
+        
+        pprint = config(item_type='runewords',
+                        item_name=item_name,
+                        item_spec=item_spec)
 
-@bot.command(name='runewords')
-async def runewords(ctx,
-                    item_name= None,
-                    item_spec= None,
-):
-    
-    pprint = config(item_type='runewords',
-                    item_name=item_name,
-                    item_spec=item_spec)
+        logger = RunewordLogger(pprint,
+                                item_name,
+                                item_spec)
+        pprint = str(logger)
+        await ctx.send(pprint)
 
-    logger = RunewordLogger(pprint,
-                            item_name,
-                            item_spec)
-    pprint = str(logger)
-    await ctx.send(pprint)
+
+    @bot.command(name='set')
+    async def runewords(ctx,
+                        item_name= None,
+                        item_spec= None,
+    ):
+        #TODO
+        
+        await ctx.send("Sets are still in development RiP...")
+
+
+    @bot.command(name='unique')
+    async def runewords(ctx,
+                        item_name= None,
+                        item_spec= None,
+    ):
+        #TODO
+        
+        await ctx.send("Uniques are still in development RiP...")
 
 bot.run(config._get_token_id())
