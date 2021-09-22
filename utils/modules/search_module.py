@@ -58,7 +58,7 @@ class ItemSearchModule(BaseModule):
         if not item_name and not item_spec:
 
             results = Map({})
-            results['Item Names'] = []
+            results['ITEM_NAME'] = []
 
             for link in parent_container:
                 tags = link.find_all(self.config.TITLE_CONTAINER,
