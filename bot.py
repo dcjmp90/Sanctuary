@@ -43,7 +43,7 @@ if args.BOT_REQUEST == 'LOOKUP':
         await ctx.send(pprint)
 
 
-    @bot.command(name='set')
+    @bot.command(name='sets')
     async def runewords(ctx,
                         item_name= None,
                         item_spec= None,
@@ -53,7 +53,7 @@ if args.BOT_REQUEST == 'LOOKUP':
         await ctx.send("Sets are still in development RiP...")
 
 
-    @bot.command(name='unique')
+    @bot.command(name='uniques')
     async def runewords(ctx,
                         item_name= None,
                         item_spec= None,
