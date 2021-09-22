@@ -39,15 +39,9 @@ class ItemSearchModule(BaseModule):
                  filter_term='class',
                  title_class='z-sort-name',
     ):
-        self.config = config
         self.tokenizer = getattr(import_module(config.TOKENIZER_PACKAGE), 
                                                config.TOKENIZER_MODULE)()
-        super().__init__(parent_container,
-                        child_container,
-                        title_container,
-                        filter_term,
-                        title_class,
-        )
+        super().__init__(config)
 
     def _search(self):
         """TODO: search details
@@ -69,20 +63,22 @@ class ItemSearchModule(BaseModule):
         """
 
         if not item_name and not item_spec:
-            #TODO
+
             results = Map({})
             results['Item Names'] = []
 
             for link in parent_container:
-                tags = link.find_all(self.title_container,{self.filter_term:self.title_class})
+                tags = link.find_all(self.config.TITLE_CONTAINER,
+                                     {self.config.FILTER_TERM:self.config.TITLE_CLASS},
+                                    )
                 if tags:
                     results['Item Names'].append([s.text for s in tags])
             return results
         elif not item_spec and item_name:
-            #TODO
+
             for link in parent_container:
-                tags = link.find_all(self.title_container,
-                                     {self.filter_term:self.title_class},
+                tags = link.find_all(self.config.TITLE_CONTAINER,
+                                     {self.config.FILTER_TERM:self.config.TITLE_CLASS},
                                      text=re.compile(item_name),
                                     )
                 for tag in tags:
@@ -91,12 +87,12 @@ class ItemSearchModule(BaseModule):
                         self.results[item_name] = self.tokenizer(tag, item_name)
 
         elif item_spec and item_name:
-            #TODO
-            specs = {self.filter_term:self.title_class}
+
             for link in parent_container:
-                tags = link.find_all(self.title_container,
-                                     specs,
-                                     text=re.compile(item_name))
+                tags = link.find_all(self.config.TITLE_CONTAINER,
+                                     {self.config.FILTER_TERM:self.config.TITLE_CLASS},
+                                     text=re.compile(item_name),
+                                    )
                 for tag in tags:
                     if tag:
                         return self.tokenizer(tag,
