@@ -58,7 +58,7 @@ class RunewordItemTokenizer:
 
         for method in dir(self):
             if method.startswith('_get'):
-                attr = method.split('_')[-1]
+                attr = method.split('get_')[-1]
                 self.queries[attr] = method
 
     def _get_recipe(self,
@@ -134,7 +134,7 @@ class RunewordItemTokenizer:
         results = Map({})
         specs_stats = {self.filter_term:item_stats}
         heap = tag.parent.find_all(self.item_content,specs_stats)
-        results[item_spec] = [t.text for t in heap]
+        results[item_spec] = [t.text.strip() for t in heap if len(t.text.strip()) > 1]
         self.item._add(results)
     
     def _get_requirements(self,
@@ -225,10 +225,9 @@ class RunewordItemTokenizer:
         """
         for attr, method in self.queries.items():
             if attr != item_spec:
-                self.item._add(getattr(self,method)(tag,
-                                                    item_name,
-                                                    attr))
-        return all_attrs
+                getattr(self,method)(tag,
+                                     item_name,
+                                     attr)
 
     def __call__(self,
                  item,
@@ -236,14 +235,15 @@ class RunewordItemTokenizer:
                  item_spec = 'all',
     ):
         """Call override to handle specific query if any"""
-        
-        self.item = RuneWordItem(item_name) 
+
+        rwitem = RuneWordItem(item_name) 
+        self.item = rwitem
 
         if item_spec in self.queries.keys():
             getattr(self,self.queries[item_spec])(item,
                                                   item_name,
                                                   item_spec)
-            return self.item
+            return rwitem
         else:
             raise ValueError('Error: Value does not exist or query was in error!')
         
