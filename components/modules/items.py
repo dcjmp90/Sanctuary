@@ -92,17 +92,17 @@ class RuneWordItem(BaseItem):
 
     def _add_level_required(self, specs):
         """get the level requirement"""
-        self.build_attrs[2] = '** Level Required ** : '+''.join(specs)
+        self.build_attrs[2] = '** Level Required ** : '+''.join(specs)+'\n'
     
     def _add_stats(self, specs):
         """get the stats for the item"""
         for idx, priority in enumerate(range(5,len(specs)*5+1,3)):
-            self.build_attrs[priority] = '\t\t'+specs[idx]+'\n'
+            self.build_attrs[priority] = ''+specs[idx]+'\n'
     
     def _add_item_type(self, specs):
         """get the items base type"""
         for idx, priority in enumerate(range(3,len(specs)*3+1,3)):
-            self.build_attrs[priority+1] = specs[idx]+'\n'
+            self.build_attrs[priority+1] = ' '+specs[idx]+'\n'
 
     def __call__(self):
         """callable should be the main handler"""
