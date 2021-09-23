@@ -73,6 +73,13 @@ class CommandLineArgs:
                             required=True,
                             help="REQUIRED -- You will need to pass an argument for the bot type you want.",
                             )
+        
+        parser.add_argument('--item-specs',
+                            dest='RW_ITEM_SPECS',
+                            type=lambda s : [w.strip() for w in s.split(',')],
+                            default='stats,requirements,recipe,all',
+                            )
+
         parser.add_argument('--bot-prefix',
                             dest='PREFIX',
                             type=str,
