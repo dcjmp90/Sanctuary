@@ -47,11 +47,9 @@ if args.BOT_REQUEST == 'LOOKUP':
                 else:
                     out += ': '+v
         else:
-            print(type(items))
             for rw in items:
-                print(type(rw))
                 out += rw()
-                
+
         await ctx.send(out)
 
 
