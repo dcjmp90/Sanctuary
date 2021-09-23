@@ -68,7 +68,7 @@ class ItemSearchModule(BaseModule):
                     results['ITEM_NAME'].append([s.text for s in tags])
             return results
         elif not item_spec and item_name:
-
+            results = []
             for link in parent_container:
                 tags = link.find_all(self.config.TITLE_CONTAINER,
                                      {self.config.FILTER_TERM:self.config.TITLE_CLASS},
@@ -77,10 +77,11 @@ class ItemSearchModule(BaseModule):
                 for tag in tags:
                     if tag:
                         # Find and report all information
-                        return self.tokenizer(tag, item_name)
+                        results.append(self.tokenizer(tag, item_name))
+            return results
 
         elif item_spec and item_name:
-
+            results = []
             for link in parent_container:
                 tags = link.find_all(self.config.TITLE_CONTAINER,
                                      {self.config.FILTER_TERM:self.config.TITLE_CLASS},
@@ -88,9 +89,10 @@ class ItemSearchModule(BaseModule):
                                     )
                 for tag in tags:
                     if tag:
-                        return self.tokenizer(tag,
-                                              item_name,
-                                              item_spec=item_spec)
+                        results.append(self.tokenizer(tag,
+                                                      item_name,
+                                                      item_spec=item_spec))
+            return results
         else:
             msg = 'No Data!! How did you get here with \''+item_name+'\'?!'
             print(msg)
