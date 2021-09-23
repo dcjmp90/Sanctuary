@@ -77,30 +77,129 @@ class RuneWordItem(BaseItem):
             if k in self.compiled_attrs.keys():
                 getattr(self, self.compiled_attrs[k])(v)
 
-    def _add_recipe(self, specs, sep='>>'):
-        """get the recipe for this item
+    def _add_recipe(self, 
+                    specs, 
+                    sep='>>',
+    ):
+        """Get the recipe for this item
         
+        This will be a single key-value dictionary
 
         
+        Example of a dict_like object:
+
+            Single key-value
+            ----------------
+                __dict__ = {'recipe' : ['Tal', 'Thul', 'Ort', 'Amn']}
+        
+        Parameters
+        ----------
+
+        specs : dict
+            A dictionary as described as above
+        
+        sep : str
+            This string will be a token that will join each 
+                element together with to show sequence
         """
         self.build_attrs[1] = '** Recipe ** : '+sep.join(specs) +'\n'
 
     def _add_socket_requirement(self, specs):
-        """get the number of sockets required"""
+        """Get the socket req. for this item
+        
+        This will be single set of key-values 
+            within the dictionary parameter
+
+        This will add in sequential order, and this 
+            will work for every ith requirement listed
+        
+         Example of a dict_like object:
+
+            Single key-value
+            ----------------
+                __dict__ = {'socket_requirement' : ['3 Socket',...]}
+        
+        Parameters
+        ----------
+
+        specs : dict
+            A dictionary as described as above
+        """
+             
         for idx, priority in enumerate(range(3,len(specs)*3+1,3)):
             self.build_attrs[priority] = '** Build with ** : '+specs[idx]
 
     def _add_level_required(self, specs):
-        """get the level requirement"""
+        """Get the level req. for this item
+        
+        This will be single set of key-values 
+            within the dictionary parameter
+        
+         Example of a dict_like object:
+
+            Single key-value
+            ----------------
+                __dict__ = {'level_requirement' : ['25']}
+        
+        Parameters
+        ----------
+
+        specs : dict
+            A dictionary as described as above
+
+        Notes
+        -----
+        This list value should never have more than 1 element to it
+            just keeping all values as lists for a eaier modularity 
+            between other class objects.
+        """
         self.build_attrs[2] = '** Level Required ** : '+''.join(specs)+'\n'
     
     def _add_stats(self, specs):
-        """get the stats for the item"""
+        """Get the stats for this item
+        
+        This will be single set of key-values 
+            within the dictionary parameter
+
+        This will add in sequential order, and this 
+            will work for every ith stat-set listed
+        
+         Example of a dict_like object:
+
+            Single key-value
+            ----------------
+                __dict__ = {'stats' : ['+ 2 to all skills',...]}
+        
+        Parameters
+        ----------
+
+        specs : dict
+            A dictionary as described as above
+        """
         for idx, priority in enumerate(range(5,len(specs)*5+1,3)):
             self.build_attrs[priority] = ''+specs[idx]+'\n\n\n'
     
     def _add_item_type(self, specs):
-        """get the items base type"""
+        """Get the type for this item
+        
+        This will be single set of key-values 
+            within the dictionary parameter
+
+        This will add in sequential order, and this 
+            will work for every ith type listed
+        
+         Example of a dict_like object:
+
+            Single key-value
+            ----------------
+                __dict__ = {'item_type' : ['Swords',...]}
+        
+        Parameters
+        ----------
+
+        specs : dict
+            A dictionary as described as above
+        """
         for idx, priority in enumerate(range(3,len(specs)*3+1,3)):
             self.build_attrs[priority+1] = ' '+specs[idx]+'\n'
 
