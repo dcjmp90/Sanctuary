@@ -33,22 +33,25 @@ if args.BOT_REQUEST == 'LOOKUP':
                         item_spec= None,
     ):
         
-        item = config(item_type='runewords',
+        items = config(item_type='runewords',
                         item_name=item_name,
                         item_spec=item_spec)
-
-        if isinstance(item, dict):
-            out = ''
-            for k, v in item.items():
+        out = ''
+        if isinstance(items, dict):
+            
+            for k, v in items.items():
                 out += k 
                 print(v)
                 if isinstance(v,list):
-                    out += ':\n'+'\n'.join(v)
+                    out += ':\n'+'\n'.join([''.join(l) for l in v])
                 else:
                     out += ': '+v
         else:
-            out = item()
-        print(out)
+            print(type(items))
+            for rw in items:
+                print(type(rw))
+                out += rw()
+                
         await ctx.send(out)
 
 
