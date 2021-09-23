@@ -12,6 +12,7 @@
 # ============================================================================
 import sys
 import os
+sys.path.append(sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import discord
 from sanctuary.utils import args
 from sanctuary.utils import ItemLookupConfig
@@ -28,11 +29,16 @@ if args.BOT_REQUEST == 'LOOKUP':
     #async def on_ready():
 
     @bot.command(name='runewords', aliases=['runeword', 'runes', 'rw'])
-    async def runewords(ctx,
-                        item_name= None,
-                        item_spec= None,
-    ):
-        
+    async def runewords(ctx, *msg):
+        msg = list(msg)
+        if msg != []:
+            if msg[-1] in args.RW_ITEM_SPECS:
+                item_spec = msg[-1]
+                item_name = ' '.join(msg[:-1])
+            else:
+                item_spec = None
+                item_name = ' '.join(msg)
+
         items = config(item_type='runewords',
                         item_name=item_name,
                         item_spec=item_spec)
