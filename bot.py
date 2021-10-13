@@ -31,11 +31,13 @@ if args.BOT_REQUEST == 'LOOKUP':
     @bot.command(name='runewords', aliases=['runeword', 'runes', 'rw'])
     async def runewords(ctx, *msg):
         msg = list(msg)
+        item_name = None
+        item_spec = None 
+        
         if msg != []:
             if msg[-1] in args.RW_ITEM_SPECS:
                 item_spec = msg[-1]
                 item_name = ' '.join(msg[:-1])
-            else:
                 item_spec = None
                 item_name = ' '.join(msg)
 
